@@ -73,7 +73,7 @@ pip install fastapi-distributed-websocket
 
 ### 基本用法
 
-以下是一个基本示例，使用**单个服务器实例**，并基于**内存消息代理（in-memory broker）**进行管理。
+以下是一个基本示例，使用 **单个服务器实例** ，并基于 **内存消息代理（in-memory broker）** 进行管理。
 
 ```python
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, status
@@ -187,7 +187,7 @@ async def websocket_endpoint(
 ### Connection（连接）
 
 `Connection` 对象封装了 WebSocket 连接，并提供了简洁的接口来**发送**和**接收**消息。  
-它们具有 `topics` 属性，可用于存储**订阅模式**，并实现**发布/订阅（pub/sub）**模型。
+它们具有 `topics` 属性，可用于存储**订阅模式**，并实现 **发布/订阅（pub/sub）** 模型。
 
 * **`async`** `accept(self) -> None`  
   接受 WebSocket 连接。

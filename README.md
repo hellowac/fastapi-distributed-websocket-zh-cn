@@ -1,13 +1,14 @@
-[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/) 
-[![License: MIT](https://img.shields.io/badge/License-MIT-success.svg)](https://mit-license.org/) 
+[![Python 3.11](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-success.svg)](https://mit-license.org/)
 [![pypi 0.2.0](https://img.shields.io/badge/pypi-0.2.0-ff69b4.svg)](https://pypi.org/project/fastapi-distributed-websocket/)
 
 # FastAPI Distributed Websocket
 
+[中文](./README.CN.md)
+
 A library to implement websocket for distibuted systems based on FastAPI.
 
 **N.B.: This library is still at an early stage, use it in production at your own risk.**
-
 
 ## What it does
 
@@ -18,7 +19,6 @@ The main features of this libarary are:
 * Authentication
 * Clean exception handling
 * An in memory broker for fast development
-
 
 ## Problems of scaling websocket among multiple servers in production
 
@@ -210,17 +210,16 @@ Connection objects wrap the websocket connection and provide a simple interface
 to send and receive messages. They have a `topics` attribute to store subscriptions
 patterns and implement pub/sub models.
 
-* **`async`**` accept(self) -> None` \
+* **`async`**`accept(self) -> None` \
   Accept the connection.
-* **`async`**` close(self, code: int = 1000) -> None` \
+* **`async`**`close(self, code: int = 1000) -> None` \
   Close the connection with the specified status.
-* **`async`**` receive_json(self) -> Any` \
+* **`async`**`receive_json(self) -> Any` \
   Receive a JSON message.
-* **`async`**` send_json(self, data: Any) -> None` \
+* **`async`**`send_json(self, data: Any) -> None` \
   Send a JSON message over the connection.
-* **`async`**` iter_json(self) -> AsyncIterator[Any]` \
+* **`async`**`iter_json(self) -> AsyncIterator[Any]` \
   Iterate over the messages received over the connection.
-
 
 ### Messages
 
@@ -244,7 +243,6 @@ a `dict` object into a `Message` object.
 * `__serialize__(self) -> dict` \
   Serialize the message into a `dict` object.
 
-
 ### Subscriptions
 
 You can bind topics to connection objects to implement pub/sub models, notification and so on.
@@ -265,18 +263,16 @@ that you usually don't deal with.
 * `matches(topic: str, patterns: set[str]) -> bool` \
   Check if `topic` matches any of the patterns in `patterns`.
 
-
 ### Authentication
 
 Authentication is provided with the `WebSocketOAuth2PasswordBearer` class.
 It inherits from *FastAPI* `OAuth2PasswordBearer` and overrides `__call__` method to accept
 a `WebSocket` object.
 
-* **`async`**` __call__(self, websocket: WebSocket) -> str | None` \
+* **`async`**`__call__(self, websocket: WebSocket) -> str | None` \
   Authenticate the websocket connection and return the *Authorization* header value. \
   If the authentication fails, return `None` if the objects has been initialized with `auto_error=False` \
   or close the connection with the `WS_1008_POLICY_VIOLATION` code.
-
 
 ### Exceptions and Exception Handling
 
@@ -303,13 +299,12 @@ should inherit from `WebSocketException`, no matter if they are really network r
   Decorator to handle exceptions. If you decorate a function with this decorator, at any time \
   an exception of type `exc` is raised or propagated to the function, it will be handled by `handler`. \
   Use this decorator only if both your handler and the function are not async.
-* **`async`**` ahandle(
+* **`async`**`ahandle(
     exc: BaseException, handler: Callable[..., Coroutine[Any, Any, Any]]
 ) -> Callable[..., Any]` \
   Decorator to handle exceptions, same ad `handle`, but the handler is a coroutine function. \
   Use this if your handler is a coroutine function, while the decorated function could be \
   either a sync or an async function.
-
 
 ### Broker Interfaces
 
@@ -319,17 +314,17 @@ other implementation. `fastapi-distributed-websocket` provides an `InMemoryBroke
 for development purposes.
 You can inherit from `BrokerInterface` and override the methods to implement your own broker.
 
-* **`async`**` connect(self) -> Coroutine[Any, Any, None]` \
+* **`async`**`connect(self) -> Coroutine[Any, Any, None]` \
   Connect to the broker.
-* **`async`**` disconnect(self) -> Coroutine[Any, Any, None]` \
+* **`async`**`disconnect(self) -> Coroutine[Any, Any, None]` \
   Disconnect from the broker.
-* **`async`**` subscribe(self, channel: str) -> Coroutine[Any, Any, None]` \
+* **`async`**`subscribe(self, channel: str) -> Coroutine[Any, Any, None]` \
   Subscribe to a channel.
-* **`async`**` unsubscribe(self, channel: str) -> Coroutine[Any, Any, None]` \
+* **`async`**`unsubscribe(self, channel: str) -> Coroutine[Any, Any, None]` \
   Unsubscribe from a channel.
-* **`async`**` publish(self, channel: str, message: Any) -> Coroutine[Any, Any, None]` \
+* **`async`**`publish(self, channel: str, message: Any) -> Coroutine[Any, Any, None]` \
   Publish a message to a channel.
-* **`async`**` get_message(self, **kwargs) -> Coroutine[Any, Any, Message | None]` \
+* **`async`**`get_message(self, **kwargs) -> Coroutine[Any, Any, Message | None]` \
   Get a message from the broker.
 
 ### WebSocketManager
@@ -342,15 +337,15 @@ spawning a new task for each send. \
 The broker initialisation is done in the constructor while calls to `broker.connect` and
 `broker.disconnect` are handled in the `startup` and `shutdown` methods.
 
-* **`async`**` new_connection(
+* **`async`**`new_connection(
         self, websocket: WebSocket, conn_id: str, topic: str | None = None
     ) -> Coroutine[Any, Any, Connection]` \
   Create a new connection object, add it to `self.active_connections` and return it.
-* **`async`**` close_connection(
+* **`async`**`close_connection(
         self, connection: Connection, code: int = status.WS_1000_NORMAL_CLOSURE
     ) -> Coroutine[Any, Any, None]` \
   Close a connection object and remove it from `self.active_connections`.
-* ` remove_connection(self, connection: Connection) -> None` \
+* `remove_connection(self, connection: Connection) -> None` \
   Remove a connection object from `self.active_connections`.
 * `set_conn_id(self, connection: Connection, conn_id: str) -> None` \
   Set the connection id and notify the client.
@@ -366,19 +361,18 @@ The broker initialisation is done in the constructor while calls to `broker.conn
   if `conn_id` is a string or from `_send_multi_by_conn_id` if it is a list.
 * `send_msg(self, message: Message) -> None` \
   Based on the message type, it calls `send`, `send_by_conn_id` or `broadcast`.
-* **`async`**` receive(
+* **`async`**`receive(
         self, connection: Connection, message: Any
     ) -> Coroutine[Any, Any, None]` \
   Receive a message from a connection object. It passes the message down to \
   a private method that handle eventual subscriptions and then publish the message \
   to the broker.
-* **`async`**` startup(self) -> Coroutine[Any, Any, None]` \
+* **`async`**`startup(self) -> Coroutine[Any, Any, None]` \
   Start the broker connection and the listener task.
-* **`async`**` shutdown(self) -> Coroutine[Any, Any, None]` \
+* **`async`**`shutdown(self) -> Coroutine[Any, Any, None]` \
   Close the broker connection and the listener task. \
   It also takes care to cancel all the tasks spawned by `send_msg` and \
   close all the connection objects before.
-
 
 ### WebSocketProxy
 
@@ -391,7 +385,7 @@ It's initialised with a two parameters:
 
 Notice that the target server could be a remote server or the same server that starts the proxy.
 
-* **`async`**` __call__(self) -> Coroutine[Any, Any, None]` \
+* **`async`**`__call__(self) -> Coroutine[Any, Any, None]` \
   Start a websocket connection to **server_endpoint** and spawn two tasks: \
   one that forwards the messages from the client to the target and the other that \
   forwards the messages from the target to the client.
